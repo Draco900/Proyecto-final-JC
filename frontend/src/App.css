@@ -1,0 +1,435 @@
+.App {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+.dark-mode {
+  background-color: #121212;
+  color: #f8f9fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* HEADER */
+header {
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: #007bff;
+}
+
+.dark-mode .nav-links a {
+  color: #ddd;
+}
+
+.dark-mode .nav-links a:hover {
+  color: #007bff;
+}
+
+.dark-mode .logo {
+  color: #007bff;
+}
+
+.dark-mode .header-content {
+  background-color: #1e1e1e;
+}
+
+.dark-mode .nav-links a {
+  color: #ddd;
+}
+
+.dark-mode .nav-links a:hover {
+  color: #007bff;
+}
+
+.dark-mode .dark-mode-toggle {
+  background-color: #333;
+  color: #fff;
+}
+
+.dark-mode-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.dark-mode-toggle:hover {
+  background-color: #eee;
+}
+
+.dark-mode .dark-mode-toggle:hover {
+  background-color: #333;
+}
+
+/* MAIN */
+main {
+  padding: 20px 0;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+.dark-mode h1, .dark-mode h2 {
+  color: #fff;
+}
+
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-item label {
+  font-weight: 500;
+}
+
+.filter-item select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+}
+
+.dark-mode .filter-item select {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
+}
+
+/* GAME LIBRARY */
+.game-library {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.game-card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dark-mode .game-card {
+  background: #1e1e1e;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.dark-mode .game-card:hover {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.game-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.game-info {
+  padding: 15px;
+}
+
+.game-title {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.dark-mode .game-title {
+  color: #fff;
+}
+
+.game-meta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.game-genre {
+  background-color: #e9ecef;
+  padding: 3px 8px;
+  border-radius: 15px;
+  font-weight: 500;
+}
+
+.dark-mode .game-genre {
+  background-color: #333;
+  color: #fff;
+}
+
+.game-hours {
+  color: #6c757d;
+}
+
+.dark-mode .game-hours {
+  color: #bbb;
+}
+
+.game-completion {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.not-completed {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.dark-mode .completed {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.dark-mode .not-completed {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.star {
+  color: #ffc107;
+}
+
+.dark-mode .star {
+  color: #ffc107;
+}
+
+.star-rating .star {
+  color: #ddd;
+}
+
+.star-rating .star:nth-child(-n+3) {
+  color: #ffc107;
+}
+
+.dark-mode .star-rating .star {
+  color: #ddd;
+}
+
+.dark-mode .star-rating .star:nth-child(-n+3) {
+  color: #ffc107;
+}
+
+.game-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.dark-mode .btn-secondary {
+  background-color: #495057;
+  color: white;
+}
+
+.dark-mode .btn-secondary:hover {
+  background-color: #343a40;
+}
+
+.dark-mode .btn-danger {
+  background-color: #6c757d;
+  color: white;
+}
+
+.dark-mode .btn-danger:hover {
+  background-color: #5a6268;
+}
+
+/* STATISTICS */
+.statistics {
+  margin-top: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.dark-mode .stat-card {
+  background: #1e1e1e;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 5px;
+}
+
+.dark-mode .stat-value {
+  color: #007bff;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.dark-mode .stat-label {
+  color: #bbb;
+}
+
+/* FOOTER */
+footer {
+  background-color: #fff;
+  padding: 20px 0;
+  margin-top: 30px;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+.dark-mode footer {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+footer p {
+  text-align: center;
+  margin: 0;
+  color: #6c757d;
+}
+
+.dark-mode footer p {
+  color: #ddd;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .game-library {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
