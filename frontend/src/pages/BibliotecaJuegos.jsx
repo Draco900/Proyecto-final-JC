@@ -3,56 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function BibliotecaJuegos({ darkMode }) {
-  const [juegos, setJuegos] = useState([
-    {
-      _id: "1",
-      titulo: "The Legend of Zelda: Breath of the Wild",
-      genero: "Aventura",
-      plataforma: "Nintendo Switch",
-      añoLanzamiento: 2017,
-      desarrollador: "Nintendo",
-      imagenPortada: "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000000025/7137262b5a64d921e193653f8aa0b722925abc5680380ca0e18a5cfd91697f58",
-      descripcion: "Un juego de aventuras en un mundo abierto.",
-      completado: true,
-      reseña: { puntuacion: 5, horasJugadas: 120 }
-    },
-    {
-      _id: "2",
-      titulo: "Red Dead Redemption 2",
-      genero: "Acción/Aventura",
-      plataforma: "PlayStation 4",
-      añoLanzamiento: 2018,
-      desarrollador: "Rockstar Games",
-      imagenPortada: "https://media-rockstargames-com.akamaized.net/mfe6/prod/__common/img/7abc917d6fa69155c1ddafde695ce93f.jpg",
-      descripcion: "Una épica historia en el viejo oeste.",
-      completado: true,
-      reseña: { puntuacion: 5, horasJugadas: 85 }
-    },
-    {
-      _id: "3",
-      titulo: "Cyberpunk 2077",
-      genero: "RPG",
-      plataforma: "PC",
-      añoLanzamiento: 2020,
-      desarrollador: "CD Projekt Red",
-      imagenPortada: "https://image.api.playstation.com/vulcan/ap/rnd/202008/0416/6Bo40lnWU0BhgrOUm7Cb6by3.png",
-      descripcion: "Un RPG futurista en Night City.",
-      completado: false,
-      reseña: { puntuacion: 3, horasJugadas: 45 }
-    },
-    {
-      _id: "4",
-      titulo: "Hollow Knight",
-      genero: "Metroidvania",
-      plataforma: "PC",
-      añoLanzamiento: 2017,
-      desarrollador: "Team Cherry",
-      imagenPortada: "https://cdn.cloudflare.steamstatic.com/steam/apps/367520/capsule_616x353.jpg",
-      descripcion: "Un juego de plataformas con combate desafiante.",
-      completado: true,
-      reseña: { puntuacion: 4, horasJugadas: 30 }
-    }
-  ]);
+  const [juegos, setJuegos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [filtros, setFiltros] = useState({
     genero: '',
@@ -62,6 +15,25 @@ export default function BibliotecaJuegos({ darkMode }) {
 
   const [juegosFiltrados, setJuegosFiltrados] = useState([]);
 
+  // Cargar juegos desde el backend
+  useEffect(() => {
+    const cargarJuegos = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/juegos');
+        if (!response.ok) throw new Error('Error al cargar los juegos');
+        const data = await response.json();
+        setJuegos(data);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    cargarJuegos();
+  }, []);
+
+  // Aplicar filtros
   useEffect(() => {
     let resultado = [...juegos];
     if (filtros.genero) resultado = resultado.filter(j => j.genero === filtros.genero);
@@ -78,9 +50,19 @@ export default function BibliotecaJuegos({ darkMode }) {
     setJuegosFiltrados(resultado);
   }, [juegos, filtros]);
 
-  const eliminarJuego = (id) => {
+  // Eliminar juego desde el backend
+  const eliminarJuego = async (id) => {
     if (window.confirm('¿Eliminar este juego?')) {
-      setJuegos(juegos.filter(j => j._id !== id));
+      try {
+        const response = await fetch(`http://localhost:5000/api/juegos/${id}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Error al eliminar el juego');
+        setJuegos(juegos.filter(j => j._id !== id));
+      } catch (err) {
+        alert('Error al eliminar el juego: ' + err.message);
+        console.error('Error:', err);
+      }
     }
   };
 
@@ -94,10 +76,15 @@ export default function BibliotecaJuegos({ darkMode }) {
     ));
   };
 
+  // Estadísticas
   const total = juegos.length;
   const completados = juegos.filter(j => j.completado).length;
   const horasTotales = juegos.reduce((sum, j) => sum + (j.reseña?.horasJugadas || 0), 0);
   const puntuacionMedia = total > 0 ? (juegos.reduce((sum, j) => sum + (j.reseña?.puntuacion || 0), 0) / total).toFixed(1) : '0.0';
+
+  // Manejo de estados de carga y error
+  if (loading) return <div className="container"><p>Cargando juegos...</p></div>;
+  if (error) return <div className="container"><p className="error">Error: {error}</p></div>;
 
   return (
     <>
@@ -135,28 +122,33 @@ export default function BibliotecaJuegos({ darkMode }) {
       </div>
 
       <div className="game-library">
-        {juegosFiltrados.map(juego => (
-          <div key={juego._id} className="game-card">
-            <img src={juego.imagenPortada} alt={juego.titulo} className="game-image" />
-            <div className="game-info">
-              <h3 className="game-title">{juego.titulo}</h3>
-              <div className="game-meta">
-                <span className="game-genre">{juego.genero}</span>
-                <span className="game-hours">⏱️ {juego.reseña?.horasJugadas || 0}h</span>
-              </div>
-              <div className={`game-completion ${juego.completado ? 'completed' : 'not-completed'}`}>
-                {juego.completado ? '✓ Completado' : '✗ No completado'}
-              </div>
-              <div className="star-rating">
-                {renderEstrellas(juego.reseña?.puntuacion || 0)}
-              </div>
-              <div className="game-actions">
-                <Link to={`/juego/editar/${juego._id}`} className="btn btn-secondary">Editar</Link>
-                <button className="btn btn-danger" onClick={() => eliminarJuego(juego._id)}>Eliminar</button>
+        {juegosFiltrados.length === 0 ? (
+          <p>No hay juegos en tu biblioteca.</p>
+        ) : (
+          juegosFiltrados.map(juego => (
+            <div key={juego._id} className="game-card">
+              <img src={juego.imagenPortada || '/placeholder.jpg'} alt={juego.titulo} className="game-image" />
+              <div className="game-info">
+                <h3 className="game-title">{juego.titulo}</h3>
+                <div className="game-meta">
+                  <span className="game-genre">{juego.genero}</span>
+                  <span className="game-hours">⏱️ {juego.reseña?.horasJugadas || 0}h</span>
+                </div>
+                <div className={`game-completion ${juego.completado ? 'completed' : 'not-completed'}`}>
+                  {juego.completado ? '✓ Completado' : '✗ No completado'}
+                </div>
+                <div className="star-rating">
+                  {renderEstrellas(juego.reseña?.puntuacion || 0)}
+                </div>
+                <div className="game-actions">
+  <Link to={`/juego/editar/${juego._id}`} className="btn btn-secondary">Editar</Link>
+  <Link to={`/juego/${juego._id}/reseña`} className="btn btn-primary">Reseña</Link>
+  <button className="btn btn-danger" onClick={() => handleDelete(juego._id)}>Eliminar</button>
+</div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       <div className="statistics">

@@ -5,6 +5,7 @@ import './App.css';
 import BibliotecaJuegos from './pages/BibliotecaJuegos';
 import FormularioJuego from './pages/FormularioJuego';
 import EstadisticasPersonales from './pages/EstadisticasPersonales';
+import FormularioReseña from './pages/FormularioReseña';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -20,11 +21,12 @@ function App() {
         
         {/* ✅ ÚNICO contenedor para todo el contenido principal */}
         <main className="container">
-          <Routes>
-            <Route path="/" element={<BibliotecaJuegos darkMode={darkMode} />} />
-            <Route path="/juego/nuevo" element={<FormularioJuego darkMode={darkMode} />} />
-            <Route path="/estadisticas" element={<EstadisticasPersonales darkMode={darkMode} />} />
-          </Routes>
+<Routes>
+  <Route path="/" element={<BibliotecaJuegos darkMode={darkMode} />} />
+  <Route path="/juego/nuevo" element={<FormularioJuego darkMode={darkMode} />} />
+  <Route path="/juego/:juegoId/reseña" element={<FormularioReseña darkMode={darkMode} />} />
+  <Route path="/estadisticas" element={<EstadisticasPersonales darkMode={darkMode} />} />
+</Routes>
         </main>
 
         <Footer />

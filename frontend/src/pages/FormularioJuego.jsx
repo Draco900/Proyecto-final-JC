@@ -16,6 +16,9 @@ export default function FormularioJuego({ darkMode }) {
     completado: false
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -24,27 +27,58 @@ export default function FormularioJuego({ darkMode }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     
+    // Validación básica (mantenemos tus validaciones)
     if (!formData.titulo || !formData.genero || !formData.plataforma) {
-      alert('Por favor, completa los campos obligatorios: título, género y plataforma.');
+      setError('Por favor, completa los campos obligatorios: título, género y plataforma.');
       return;
     }
 
     if (formData.añoLanzamiento && (formData.añoLanzamiento < 1970 || formData.añoLanzamiento > 2025)) {
-      alert('El año de lanzamiento debe estar entre 1970 y 2025.');
+      setError('El año de lanzamiento debe estar entre 1970 y 2025.');
       return;
     }
 
-    console.log('Nuevo juego:', formData);
-    alert('¡Juego agregado exitosamente! (Simulado)');
-    navigate('/');
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/juegos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Error al guardar el juego');
+      }
+
+      const nuevoJuego = await response.json();
+      console.log('Juego guardado:', nuevoJuego);
+      
+      alert('¡Juego agregado exitosamente!');
+      navigate('/');
+    } catch (err) {
+      setError('Error al guardar el juego: ' + err.message);
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <h1>Añadir Nuevo Juego</h1>
+      
+      {error && (
+        <div className="alert alert-error" style={{ marginBottom: '20px' }}>
+          {error}
+        </div>
+      )}
       
       <form onSubmit={handleSubmit} className="form-juego">
         <div className="form-group">
@@ -157,11 +191,20 @@ export default function FormularioJuego({ darkMode }) {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>
+          <button 
+            type="button" 
+            className="btn btn-secondary" 
+            onClick={() => navigate(-1)}
+            disabled={loading}
+          >
             Cancelar
           </button>
-          <button type="submit" className="btn btn-primary">
-            Añadir Juego
+          <button 
+            type="submit" 
+            className="btn btn-primary"
+            disabled={loading}
+          >
+            {loading ? 'Guardando...' : 'Añadir Juego'}
           </button>
         </div>
       </form>

@@ -14,19 +14,20 @@ router.get('/', async (req, res) => {
 
 // POST reseñas
 router.post('/', async (req, res) => {
-  const reseña = new Reseña({
-    juegoId: req.body.juegoId,
-    puntuacion: req.body.puntuacion,
-    textoReseña: req.body.textoReseña,
-    horasJugadas: req.body.horasJugadas,
-    dificultad: req.body.dificultad,
-    recomendaria: req.body.recomendaria
-  });
-
   try {
+    const reseña = new Reseña({
+      juegoId: req.body.juegoId,
+      puntuacion: req.body.puntuacion,
+      textoReseña: req.body.textoReseña,
+      horasJugadas: req.body.horasJugadas,
+      dificultad: req.body.dificultad,
+      recomendaria: req.body.recomendaria
+    });
+
     const nuevaReseña = await reseña.save();
     res.status(201).json(nuevaReseña);
   } catch (err) {
+    console.error('Error al crear reseña:', err); // 👈 Para debug
     res.status(400).json({ message: err.message });
   }
 });
