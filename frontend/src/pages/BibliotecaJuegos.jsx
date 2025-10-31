@@ -23,7 +23,7 @@ export default function BibliotecaJuegos({ darkMode }) {
       plataforma: "PlayStation 4",
       añoLanzamiento: 2018,
       desarrollador: "Rockstar Games",
-      imagenPortada: "https://image.api.playstation.com/vulcan/img/rnd/202009/2818/GGyEnCkLxPppgqO3WJztp5sH.png",
+      imagenPortada: "https://media-rockstargames-com.akamaized.net/mfe6/prod/__common/img/7abc917d6fa69155c1ddafde695ce93f.jpg",
       descripcion: "Una épica historia en el viejo oeste.",
       completado: true,
       reseña: { puntuacion: 5, horasJugadas: 85 }
