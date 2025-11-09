@@ -1,6 +1,8 @@
 // src/pages/BibliotecaJuegos.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import TarjetaJuego from '../components/TarjetaJuego';
+import { getJuegos, deleteJuego } from '../services/api';
 
 export default function BibliotecaJuegos({ darkMode }) {
   const [juegos, setJuegos] = useState([]);
@@ -19,9 +21,7 @@ export default function BibliotecaJuegos({ darkMode }) {
   useEffect(() => {
     const cargarJuegos = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/juegos');
-        if (!response.ok) throw new Error('Error al cargar los juegos');
-        const data = await response.json();
+        const data = await getJuegos();
         setJuegos(data);
       } catch (err) {
         setError(err.message);
@@ -54,10 +54,7 @@ export default function BibliotecaJuegos({ darkMode }) {
   const eliminarJuego = async (id) => {
     if (window.confirm('¿Eliminar este juego?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/juegos/${id}`, {
-          method: 'DELETE'
-        });
-        if (!response.ok) throw new Error('Error al eliminar el juego');
+        await deleteJuego(id);
         setJuegos(juegos.filter(j => j._id !== id));
       } catch (err) {
         alert('Error al eliminar el juego: ' + err.message);
@@ -125,29 +122,16 @@ export default function BibliotecaJuegos({ darkMode }) {
         {juegosFiltrados.length === 0 ? (
           <p>No hay juegos en tu biblioteca.</p>
         ) : (
-          juegosFiltrados.map(juego => (
-            <div key={juego._id} className="game-card">
-              <img src={juego.imagenPortada || '/placeholder.jpg'} alt={juego.titulo} className="game-image" />
-              <div className="game-info">
-                <h3 className="game-title">{juego.titulo}</h3>
-                <div className="game-meta">
-                  <span className="game-genre">{juego.genero}</span>
-                  <span className="game-hours">⏱️ {juego.reseña?.horasJugadas || 0}h</span>
+          <div className="grid">
+            {juegosFiltrados.map(juego => (
+              <div key={juego._id} className="grid-item">
+                <TarjetaJuego juego={juego} />
+                <div style={{ marginTop: 8 }}>
+                  <button className="btn btn-danger" onClick={() => eliminarJuego(juego._id)}>Eliminar</button>
                 </div>
-                <div className={`game-completion ${juego.completado ? 'completed' : 'not-completed'}`}>
-                  {juego.completado ? '✓ Completado' : '✗ No completado'}
-                </div>
-                <div className="star-rating">
-                  {renderEstrellas(juego.reseña?.puntuacion || 0)}
-                </div>
-                <div className="game-actions">
-  <Link to={`/juego/editar/${juego._id}`} className="btn btn-secondary">Editar</Link>
-  <Link to={`/juego/${juego._id}/reseña`} className="btn btn-primary">Reseña</Link>
-  <button className="btn btn-danger" onClick={() => handleDelete(juego._id)}>Eliminar</button>
-</div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
 

@@ -1,9 +1,14 @@
+// Rutas de Juegos - Aquí controlo todo lo relacionado con mis juegos
+// Este archivo maneja: listar, crear, ver, editar y borrar juegos
+// Lo hice con Express porque es lo que más fácil me resultó de entender
+
 const express = require('express');
 const router = express.Router();
-const Juego = require('../models/Juego');
-const Reseña = require('../models/Reseña');
+const Juego = require('../models/Juego');    // Importo mi modelo de Juego
+const Reseña = require('../models/Reseña');  // Importo Reseña para cuando borre un juego
 
-// GET juegos
+// GET /api/juegos - Listar todos mis juegos
+// Los ordeno por fecha de creación (más nuevos primero) porque me gusta ver lo último que añadí
 router.get('/', async (req, res) => {
   try {
     const juegos = await Juego.find().sort({ fechaCreacion: -1 });
@@ -13,7 +18,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST juegos
+// POST /api/juegos - Añadir un nuevo juego a mi colección
+// Aquí recibo los datos del formulario y creo el nuevo juego
 router.post('/', async (req, res) => {
   const juego = new Juego({
     titulo: req.body.titulo,
@@ -23,18 +29,19 @@ router.post('/', async (req, res) => {
     desarrollador: req.body.desarrollador,
     imagenPortada: req.body.imagenPortada,
     descripcion: req.body.descripcion,
-    completado: req.body.completado || false
+    completado: req.body.completado || false  // Si no me dicen nada, asumo que no lo he completado
   });
 
   try {
     const nuevoJuego = await juego.save();
-    res.status(201).json(nuevoJuego);
+    res.status(201).json(nuevoJuego);  // 201 = Created
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ message: err.message });  // 400 = Bad Request
   }
 });
 
-// GET juegos/:id
+// GET /api/juegos/:id - Ver los detalles de un juego específico
+// Uso findById para buscar por el ID de MongoDB
 router.get('/:id', async (req, res) => {
   try {
     const juego = await Juego.findById(req.params.id);
@@ -45,13 +52,14 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// PUT juegos/:id
+// PUT /api/juegos/:id - Actualizar un juego
+// findByIdAndUpdate me permite actualizar y devolver el juego ya actualizado
 router.put('/:id', async (req, res) => {
   try {
     const juego = await Juego.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true }  // new: true me devuelve el juego actualizado
     );
     if (!juego) return res.status(404).json({ message: 'Juego no encontrado' });
     res.json(juego);
@@ -60,13 +68,14 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE juegos/:id
+// DELETE /api/juegos/:id - Borrar un juego (y sus reseñas)
+// También borro las reseñas asociadas porque no quiero reseñas huérfanas
 router.delete('/:id', async (req, res) => {
   try {
     const juego = await Juego.findByIdAndDelete(req.params.id);
     if (!juego) return res.status(404).json({ message: 'Juego no encontrado' });
     
-    // Elimina reseñas asociadas
+    // Elimino todas las reseñas de este juego
     await Reseña.deleteMany({ juegoId: req.params.id });
     
     res.json({ message: 'Juego eliminado' });
@@ -75,4 +84,5 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Exporto el router para usarlo en server.js
 module.exports = router;

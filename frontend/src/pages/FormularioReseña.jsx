@@ -1,9 +1,10 @@
-// src/pages/FormularioReseña.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import StarRating from '../components/StarRating';
+import { getJuegoById, createReseña, updateReseña, getReseñaById, getJuegos } from '../services/api';
 
 export default function FormularioReseña({ darkMode }) {
-  const { juegoId } = useParams();
+  const { juegoId, reseñaId } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ export default function FormularioReseña({ darkMode }) {
   });
 
   const [juego, setJuego] = useState(null);
+  const [juegos, setJuegos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -24,9 +26,7 @@ export default function FormularioReseña({ darkMode }) {
     if (juegoId) {
       const cargarJuego = async () => {
         try {
-          const response = await fetch(`http://localhost:5000/api/juegos/${juegoId}`);
-          if (!response.ok) throw new Error('Juego no encontrado');
-          const data = await response.json();
+          const data = await getJuegoById(juegoId);
           setJuego(data);
           // Asegurarse de que juegoId sea el _id del juego
           setFormData(prev => ({ ...prev, juegoId: data._id }));
@@ -39,9 +39,51 @@ export default function FormularioReseña({ darkMode }) {
       };
       cargarJuego();
     } else {
-      setLoading(false);
+      // Si no hay juegoId en la ruta, cargar lista de juegos para seleccionar
+      const cargarLista = async () => {
+        try {
+          const lista = await getJuegos();
+          setJuegos(lista);
+        } catch (err) {
+          setError('Error al cargar juegos: ' + err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      cargarLista();
     }
   }, [juegoId]);
+
+  // Cargar datos de reseña si se edita
+  useEffect(() => {
+    if (reseñaId) {
+      const cargarReseña = async () => {
+        try {
+          const r = await getReseñaById(reseñaId);
+          setFormData(prev => ({
+            ...prev,
+            juegoId: r.juegoId?._id || r.juegoId || prev.juegoId,
+            puntuacion: r.puntuacion || prev.puntuacion,
+            textoReseña: r.textoReseña || '',
+            horasJugadas: r.horasJugadas ?? '',
+            dificultad: r.dificultad || 'Normal',
+            recomendaria: !!r.recomendaria
+          }));
+          if (r.juegoId && typeof r.juegoId === 'object') {
+            setJuego(r.juegoId);
+          } else if (r.juegoId) {
+            const data = await getJuegoById(r.juegoId);
+            setJuego(data);
+          }
+        } catch (err) {
+          setError('Error al cargar la reseña: ' + err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      cargarReseña();
+    }
+  }, [reseñaId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -74,50 +116,30 @@ export default function FormularioReseña({ darkMode }) {
     };
 
     try {
-      console.log('Enviando reseña:', reseñaData); // 👈 Para debug
-      
-      const response = await fetch('http://localhost:5000/api/reseñas', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(reseñaData)
-      });
-
-      const responseData = await response.json();
-      console.log('Respuesta del backend:', responseData); // 👈 Para debug
-
-      if (!response.ok) {
-        throw new Error(responseData.message || `Error ${response.status}`);
+      if (reseñaId) {
+        await updateReseña(reseñaId, reseñaData);
+        alert('¡Reseña actualizada exitosamente!');
+      } else {
+        await createReseña(reseñaData);
+        alert('¡Reseña guardada exitosamente!');
       }
-
-      alert('¡Reseña guardada exitosamente!');
-      navigate('/');
+      navigate('/reseñas');
     } catch (err) {
       setError('Error al guardar la reseña: ' + err.message);
       console.error('Error detallado:', err);
     }
   };
 
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <span
-        key={i}
-        className="star"
-        onClick={() => setFormData({ ...formData, puntuacion: i + 1 })}
-        style={{ cursor: 'pointer', userSelect: 'none' }}
-      >
-        {i < rating ? '★' : '☆'}
-      </span>
-    ));
-  };
+  const renderStars = (rating) => (
+    <StarRating value={rating} onChange={(val) => setFormData({ ...formData, puntuacion: val })} />
+  );
 
   if (loading) return <div className="container"><p>Cargando...</p></div>;
   if (error) return <div className="container"><p className="error">{error}</p></div>;
 
   return (
     <>
-      <h1>{juegoId ? `Reseña para: ${juego?.titulo}` : 'Nueva Reseña'}</h1>
+      <h1>{reseñaId ? 'Editar Reseña' : (juegoId ? `Reseña para: ${juego?.titulo}` : 'Nueva Reseña')}</h1>
       
       {error && (
         <div className="alert alert-error" style={{ marginBottom: '20px' }}>
@@ -126,6 +148,23 @@ export default function FormularioReseña({ darkMode }) {
       )}
 
       <form onSubmit={handleSubmit} className="form-juego">
+        {!juegoId && (
+          <div className="form-group">
+            <label htmlFor="juegoId">Juego *</label>
+            <select
+              id="juegoId"
+              name="juegoId"
+              value={formData.juegoId}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Selecciona un juego</option>
+              {juegos.map((j) => (
+                <option key={j._id} value={j._id}>{j.titulo}</option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="form-group">
           <label>Puntuación *</label>
           <div className="star-rating" style={{ fontSize: '2rem', marginBottom: '10px' }}>
@@ -207,7 +246,7 @@ export default function FormularioReseña({ darkMode }) {
             type="submit" 
             className="btn btn-primary"
           >
-            Guardar Reseña
+            {reseñaId ? 'Actualizar Reseña' : 'Guardar Reseña'}
           </button>
         </div>
       </form>

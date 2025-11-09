@@ -1,9 +1,10 @@
-// src/pages/FormularioJuego.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { createJuego, updateJuego, getJuegoById } from '../services/api';
 
 export default function FormularioJuego({ darkMode }) {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [formData, setFormData] = useState({
     titulo: '',
@@ -44,23 +45,13 @@ export default function FormularioJuego({ darkMode }) {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/juegos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Error al guardar el juego');
+      if (id) {
+        await updateJuego(id, formData);
+        alert('¡Juego actualizado exitosamente!');
+      } else {
+        await createJuego(formData);
+        alert('¡Juego agregado exitosamente!');
       }
-
-      const nuevoJuego = await response.json();
-      console.log('Juego guardado:', nuevoJuego);
-      
-      alert('¡Juego agregado exitosamente!');
       navigate('/');
     } catch (err) {
       setError('Error al guardar el juego: ' + err.message);
@@ -70,9 +61,35 @@ export default function FormularioJuego({ darkMode }) {
     }
   };
 
+  // Cargar juego existente si estamos editando
+  useEffect(() => {
+    const cargarJuego = async () => {
+      if (!id) return;
+      try {
+        setLoading(true);
+        const data = await getJuegoById(id);
+        setFormData({
+          titulo: data.titulo || '',
+          genero: data.genero || '',
+          plataforma: data.plataforma || '',
+          añoLanzamiento: data.añoLanzamiento || '',
+          desarrollador: data.desarrollador || '',
+          imagenPortada: data.imagenPortada || '',
+          descripcion: data.descripcion || '',
+          completado: !!data.completado,
+        });
+      } catch (err) {
+        setError('Error al cargar el juego: ' + err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    cargarJuego();
+  }, [id]);
+
   return (
     <>
-      <h1>Añadir Nuevo Juego</h1>
+      <h1>{id ? 'Editar Juego' : 'Añadir Nuevo Juego'}</h1>
       
       {error && (
         <div className="alert alert-error" style={{ marginBottom: '20px' }}>
@@ -204,7 +221,7 @@ export default function FormularioJuego({ darkMode }) {
             className="btn btn-primary"
             disabled={loading}
           >
-            {loading ? 'Guardando...' : 'Añadir Juego'}
+            {loading ? 'Guardando...' : id ? 'Guardar Cambios' : 'Añadir Juego'}
           </button>
         </div>
       </form>
