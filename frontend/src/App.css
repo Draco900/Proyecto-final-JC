@@ -1,94 +1,107 @@
 /* --- VARIABLES CSS --- */
 :root {
   /* Tema claro */
-  --bg: #f5f7fa;
-  --card-bg: #ffffff;
-  --text: #1e293b;
-  --text-secondary: #64748b;
-  --border: #e2e8f0;
-  --header-bg: #ffffff;
-  --footer-bg: #f1f5f9;
-  --primary: #3b82f6;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
-  --radius: 12px;
-  --transition: all 0.25s ease;
+  --bg: #f5f7fa;                /* Fondo principal de la app */
+  --card-bg: #ffffff;           /* Fondo de tarjetas y formularios */
+  --text: #1e293b;              /* Texto principal */
+  --text-secondary: #64748b;    /* Texto secundario */
+  --border: #e2e8f0;            /* Color de bordes */
+  --header-bg: #ffffff;         /* Fondo del encabezado */
+  --footer-bg: #f1f5f9;         /* Fondo del pie de página */
+  --primary: #3b82f6;           /* Color principal (botones, enlaces) */
+  --success: #10b981;           /* Color para acciones exitosas */
+  --danger: #ef4444;            /* Color para acciones peligrosas */
+  --warning: #f59e0b;           /* Color para alertas */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);        /* Sombra suave */
+  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12); /* Sombra al pasar el mouse */
+  --radius: 12px;               /* Bordes redondeados */
+  --transition: all 0.25s ease; /* Transiciones suaves */
 }
+
 .dark-mode {
   /* Tema oscuro auténtico */
-  --bg: #0f172a;
-  --card-bg: #1e293b;
-  --text: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --border: #334155;
-  --header-bg: #1e293b;
-  --footer-bg: #0f172a;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.35);
+  --bg: #0f172a;                /* Fondo principal en modo oscuro */
+  --card-bg: #1e293b;           /* Fondo de tarjetas en modo oscuro */
+  --text: #f1f5f9;              /* Texto en modo oscuro */
+  --text-secondary: #94a3b8;    /* Texto secundario en modo oscuro */
+  --border: #334155;            /* Bordes en modo oscuro */
+  --header-bg: #1e293b;         /* Fondo del encabezado en modo oscuro */
+  --footer-bg: #0f172a;         /* Fondo del pie en modo oscuro */
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.25);        /* Sombra oscura suave */
+  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.35); /* Sombra oscura al pasar el mouse */
 }
+
 /* --- ESTILOS GLOBALES --- */
 * {
-  box-sizing: border-box;
+  box-sizing: border-box; /* Incluye padding y border en el cálculo del ancho */
   margin: 0;
   padding: 0;
 }
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: var(--bg);
   color: var(--text);
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s; /* Transición suave entre modos */
   line-height: 1.6;
 }
+
 .App {
-  min-height: 100vh;
+  min-height: 100vh; /* La app ocupa toda la altura de la pantalla */
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Organiza elementos verticalmente */
 }
+
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+  max-width: 1200px; /* Ancho máximo para contenido principal */
+  margin: 0 auto;    /* Centra el contenido horizontalmente */
+  padding: 0 20px;   /* Espacio lateral */
 }
-/* --- HEADER --- */
+
+/* --- ENCABEZADO --- */
 header {
   background-color: var(--header-bg);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: sticky; /* Se queda fijo al hacer scroll */
   top: 0;
   z-index: 100;
 }
+
 .header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Espacia elementos a los extremos */
   align-items: center;
   padding: 1rem 0;
 }
+
 .logo {
   font-size: 1.6rem;
   font-weight: bold;
   color: var(--primary);
 }
+
 .nav-links {
   display: flex;
-  gap: 1.25rem;
+  gap: 1.25rem; /* Espacio entre enlaces */
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .nav-links a {
   text-decoration: none;
   color: var(--text);
   font-weight: 500;
   transition: color 0.2s;
 }
+
 .nav-links a:hover {
   color: var(--primary);
 }
+
 .dark-mode .nav-links a:hover {
   color: #93c5fd;
 }
+
 .dark-mode-toggle {
   background: none;
   border: none;
@@ -100,76 +113,101 @@ header {
   color: #4b5563;
   transition: var(--transition);
 }
+
 .dark-mode .dark-mode-toggle {
   background-color: #334155;
   color: #cbd5e1;
 }
+
 .dark-mode-toggle:hover {
   background-color: #cbd5e1;
 }
+
 .dark-mode .dark-mode-toggle:hover {
   background-color: #475569;
 }
-/* --- MAIN --- */
+
+/* --- CONTENIDO PRINCIPAL --- */
 main {
   padding: 2rem 0;
-  flex: 1;
+  flex: 1; /* Ocupa el espacio restante entre header y footer */
 }
+
 h1, h2 {
   color: var(--text);
   margin-bottom: 1.5rem;
 }
-/* --- GRID Y TARJETAS HORIZONTALES (ESTILO STEAM) --- */
+
+/* --- TARJETAS DE JUEGO --- */
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.5rem; /* Espacio entre tarjetas */
   margin-top: 1.5rem;
 }
+
+/* Separación clara entre la zona de tarjetas y el pie de página */
+.game-library {
+  margin-bottom: 3rem;
+}
+
 .card {
   background: var(--card-bg);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow: hidden; /* Oculta contenido que se desborda */
   box-shadow: var(--shadow);
   transition: var(--transition);
-  display: flex;
-  align-items: stretch;
-  height: 160px; /* Altura fija para consistencia */
+  display: flex; /* Organiza imagen y contenido horizontalmente */
+  align-items: stretch; /* Ajusta altura de imagen y contenido */
+  height: auto;
+  min-height: 160px; /* Altura mínima para consistencia visual */
 }
+
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Eleva la tarjeta al pasar el mouse */
   box-shadow: var(--shadow-hover);
   z-index: 1;
 }
+
 /* Imagen de portada (izquierda) */
 .card-media {
-  width: 240px;
-  background: #f1f5f9;
+  width: 240px;       /* Ancho fijo */
+  height: 160px;      /* Altura fija */
+  background: #f1f5f9; /* Fondo cuando no hay imagen */
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  flex-shrink: 0;
+  flex-shrink: 0;     /* No se reduce al ajustar espacio */
+  overflow: hidden;   /* Oculta bordes de imagen que sobran */
 }
+
 .card-media img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover;          /* Llena el contenedor sin espacios */
+  object-position: center;    /* Centra la imagen */
   display: block;
+  border-radius: 12px 0 0 12px; /* Bordes redondeados solo en los lados izquierdo */
 }
+
 .placeholder {
   color: #94a3b8;
   font-size: 0.95rem;
   text-align: center;
 }
+
 /* Contenido de la tarjeta (derecha) */
 .card-body {
   padding: 1.25rem;
-  flex: 1;
+  flex: 1; /* Ocupa el espacio restante */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-between; /* Espacia elementos arriba y abajo */
+  gap: 0.5rem;
+  min-height: 160px; /* Mismo alto que .card-media para alineación */
 }
+
 .card-body h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.15rem;
@@ -177,8 +215,9 @@ h1, h2 {
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; /* Corta títulos largos con "..." */
 }
+
 .meta {
   font-size: 0.85rem;
   color: var(--text-secondary);
@@ -187,40 +226,69 @@ h1, h2 {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
-.reseña-resumen {
+
+.resena-resumen {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin: 0.5rem 0;
 }
+
+.horas-jugadas {
+  background: linear-gradient(135deg, #10b981, #059669); /* Degradado verde */
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px; /* Forma redonda */
+  font-weight: 600;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dark-mode .horas-jugadas {
+  background: linear-gradient(135deg, #34d399, #10b981);
+}
+
 /* Botones de acción (abajo derecho) */
 .card-actions {
   display: flex;
   gap: 0.75rem;
-  margin-top: auto;
-  padding-top: 0.75rem;
-  justify-content: flex-end;
+  margin-top: 0.75rem;
+  padding-top: 0.25rem;
+  justify-content: flex-start;
 }
+
 /* --- ESTRELLAS --- */
 .star-rating {
   display: flex;
   gap: 2px;
   font-size: 1.1rem;
-  user-select: none;
+  user-select: none; /* Evita seleccionar texto al hacer clic */
 }
+
 .star-rating span {
   color: #ddd;
   cursor: pointer;
 }
+
 .star-rating span.filled {
-  color: var(--warning);
+  color: #ffcc00; /* Estrella llena en amarillo */
 }
+
 .dark-mode .star-rating span {
   color: #555;
 }
+
 .dark-mode .star-rating span.filled {
   color: #ffcc00;
 }
+
+/* Hover mejorado para estrellas interactivas */
+.star-rating span[role="button"]:hover,
+.star-rating span[role="button"]:focus {
+  transform: scale(1.1); /* Agrandar estrella al pasar el mouse */
+  color: #ffcc00 !important;
+}
+
 /* --- BOTONES --- */
 .btn {
   padding: 0.6rem 1rem;
@@ -233,27 +301,34 @@ h1, h2 {
   min-width: 80px;
   text-align: center;
 }
+
 .btn-primary {
   background-color: var(--primary);
   color: white;
 }
+
 .btn-primary:hover {
   background-color: #2563eb;
 }
+
 .btn-secondary {
   background-color: #64748b;
   color: white;
 }
+
 .btn-secondary:hover {
   background-color: #475569;
 }
+
 .btn-danger {
   background-color: var(--danger);
   color: white;
 }
+
 .btn-danger:hover {
   background-color: #dc2626;
 }
+
 /* --- FILTROS --- */
 .filters {
   display: flex;
@@ -261,16 +336,31 @@ h1, h2 {
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
 }
+
+.dark-mode .filters {
+  background-color: #2d3748;
+}
+
 .filter-item {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
+
 .filter-item label {
   font-weight: 500;
   font-size: 0.9rem;
+  color: #555;
 }
+
+.dark-mode .filter-item label {
+  color: #ddd;
+}
+
 .filter-item select {
   padding: 0.4rem 0.6rem;
   border: 1px solid var(--border);
@@ -278,24 +368,28 @@ h1, h2 {
   background: var(--card-bg);
   color: var(--text);
 }
+
 /* --- FORMULARIOS --- */
 .form-juego {
-  max-width: 600px;
+  max-width: 600px; /* Ancho máximo para formularios */
   margin: 0 auto 2rem;
   background: var(--card-bg);
   padding: 1.5rem;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
+
 .form-group {
   margin-bottom: 1.25rem;
 }
+
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: var(--text);
 }
+
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -307,35 +401,41 @@ h1, h2 {
   background: var(--card-bg);
   color: var(--text);
 }
+
 .form-checkbox {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
+
 /* --- ALERTAS --- */
 .alert {
   padding: 0.75rem;
   margin-bottom: 1.25rem;
   border-radius: 6px;
 }
+
 .alert-error {
   background-color: #fee2e2;
   color: #b91c1c;
   border: 1px solid #fecaca;
 }
+
 .dark-mode .alert-error {
   background-color: #451a1a;
   color: #fecaca;
   border-color: #7f1d1d;
 }
+
 /* --- ESTADÍSTICAS --- */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Columnas flexibles */
   gap: 1.25rem;
   margin-top: 1.5rem;
 }
+
 .stat-card {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -343,59 +443,116 @@ h1, h2 {
   text-align: center;
   box-shadow: var(--shadow);
 }
+
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 0.25rem;
 }
+
 .stat-label {
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
-/* --- FOOTER --- */
-footer {
-  background-color: var(--footer-bg);
-  padding: 1.5rem 0;
-  margin-top: auto;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
-}
-footer p {
+
+/* --- ESTADO DEL JUEGO --- */
+.estado-juego {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(59, 130, 246, 0.1); /* Fondo semitransparente */
+  border-radius: 12px;
   text-align: center;
-  margin: 0;
-  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
+
+.estado-juego small {
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* --- PIE DE PÁGINA --- */
+.footer-mejorado {
+  background-color: var(--footer-bg);
+  color: var(--text-secondary);
+  padding: 24px 0;
+  margin-top: auto; /* Empuja el footer al final */
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--primary);
+}
+
+.footer-description {
+  margin: 0;
+  opacity: 0.85;
+  max-width: 400px;
+}
+
+.footer-credit {
+  margin: 0;
+  opacity: 0.8;
+}
+
 /* --- RESPONSIVE --- */
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
     gap: 1rem;
   }
+
   .filters {
     flex-direction: column;
     align-items: stretch;
   }
+
   /* En móvil, las tarjetas vuelven a ser verticales */
   .card {
     flex-direction: column;
     height: auto;
   }
+
   .card-media {
     width: 100%;
     height: 140px;
   }
+
   .card-body {
     padding: 1rem;
   }
+
   .card-actions {
     justify-content: center;
   }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
   .form-actions {
     flex-direction: column;
   }
+
   .btn {
     width: 100%;
   }

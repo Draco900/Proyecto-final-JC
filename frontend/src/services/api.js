@@ -1,5 +1,4 @@
 // Aquí tengo todas las funciones para llamar a mi API
-// Uso fetch porque es nativo de JavaScript y no necesito instalar nada más
 const API_BASE_URL = 'http://localhost:5000/api';  // URL de mi servidor backend
 
 // Helper para manejar respuestas
@@ -52,8 +51,6 @@ export const deleteJuego = (id) =>
   });
 
 // ===== FUNCIONES DE RESEÑAS =====
-// Uso /resenas (sin acento) para evitar problemas de encoding
-// Esto es porque en mi backend, el endpoint está configurado con /resenas
 
 // Obtener todas las reseñas que he escrito
 export const getReseñas = () => 

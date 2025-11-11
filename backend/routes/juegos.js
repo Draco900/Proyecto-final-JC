@@ -1,6 +1,5 @@
 // Rutas de Juegos - Aquí controlo todo lo relacionado con mis juegos
 // Este archivo maneja: listar, crear, ver, editar y borrar juegos
-// Lo hice con Express porque es lo que más fácil me resultó de entender
 
 const express = require('express');
 const router = express.Router();
@@ -8,11 +7,24 @@ const Juego = require('../models/Juego');    // Importo mi modelo de Juego
 const Reseña = require('../models/Reseña');  // Importo Reseña para cuando borre un juego
 
 // GET /api/juegos - Listar todos mis juegos
-// Los ordeno por fecha de creación (más nuevos primero) porque me gusta ver lo último que añadí
+// Los ordeno por fecha de creación 
+// Ahora incluyo las reseñas asociadas para poder ordenar por horas y puntuación
 router.get('/', async (req, res) => {
   try {
     const juegos = await Juego.find().sort({ fechaCreacion: -1 });
-    res.json(juegos);
+    
+    // Obtener las reseñas para cada juego
+    const juegosConReseñas = await Promise.all(
+      juegos.map(async (juego) => {
+        const reseña = await Reseña.findOne({ juegoId: juego._id });
+        return {
+          ...juego.toObject(),
+          reseña: reseña ? reseña.toObject() : null
+        };
+      })
+    );
+    
+    res.json(juegosConReseñas);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -1,4 +1,3 @@
-// src/pages/BibliotecaJuegos.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import TarjetaJuego from '../components/TarjetaJuego';
@@ -91,7 +90,7 @@ export default function BibliotecaJuegos({ darkMode }) {
         <div className="filter-item">
           <label htmlFor="genre-filter">Género:</label>
           <select id="genre-filter" value={filtros.genero} onChange={(e) => cambiarFiltro('genero', e.target.value)}>
-            <option value="">Todos</option>
+            <option value="">Todos los géneros</option>
             <option value="Aventura">Aventura</option>
             <option value="Acción">Acción</option>
             <option value="RPG">RPG</option>
@@ -103,7 +102,7 @@ export default function BibliotecaJuegos({ darkMode }) {
         <div className="filter-item">
           <label htmlFor="completion-filter">Estado:</label>
           <select id="completion-filter" value={filtros.completado} onChange={(e) => cambiarFiltro('completado', e.target.value)}>
-            <option value="">Todos</option>
+            <option value="">Todos los estados</option>
             <option value="completed">Completados</option>
             <option value="not-completed">No completados</option>
           </select>
@@ -125,37 +124,12 @@ export default function BibliotecaJuegos({ darkMode }) {
           <div className="grid">
             {juegosFiltrados.map(juego => (
               <div key={juego._id} className="grid-item">
-                <TarjetaJuego juego={juego} />
-                <div style={{ marginTop: 8 }}>
-                  <button className="btn btn-danger" onClick={() => eliminarJuego(juego._id)}>Eliminar</button>
-                </div>
+                <TarjetaJuego juego={juego} onEliminar={eliminarJuego} />
               </div>
             ))}
           </div>
         )}
-      </div>
-
-      <div className="statistics">
-        <h2>Mis Estadísticas</h2>
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-value">{total}</div>
-            <div className="stat-label">Total de juegos</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{completados}</div>
-            <div className="stat-label">Juegos completados</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{horasTotales}</div>
-            <div className="stat-label">Horas totales</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{puntuacionMedia}</div>
-            <div className="stat-label">Puntuación media</div>
-          </div>
         </div>
-      </div>
     </>
   );
 }

@@ -1,0 +1,25 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fondo circular -->
+  <circle cx="60" cy="60" r="58" fill="url(#grad1)" />
+
+  <!-- Control de Game Boy Advance -->
+  <path d="M30,60 L50,60 L50,80 L30,80 Z" fill="white" /> <!-- Botones A/B/X/Y -->
+  <path d="M70,60 L90,60 L90,80 L70,80 Z" fill="white" />
+  <circle cx="40" cy="70" r="3" fill="#1e293b" /> <!-- A -->
+  <circle cx="45" cy="70" r="3" fill="#1e293b" /> <!-- B -->
+  <circle cx="75" cy="70" r="3" fill="#1e293b" /> <!-- X -->
+  <circle cx="80" cy="70" r="3" fill="#1e293b" /> <!-- Y -->
+
+  <!-- D-pad -->
+  <path d="M60,40 L65,45 L60,50 L55,45 Z" fill="white" />
+  <path d="M60,80 L65,85 L60,90 L55,85 Z" fill="white" />
+  <path d="M50,70 L55,75 L60,70 L55,65 Z" fill="white" />
+  <path d="M70,70 L75,75 L80,70 L75,65 Z" fill="white" />
+</svg>

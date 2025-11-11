@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
-
 import BibliotecaJuegos from './pages/BibliotecaJuegos';
 import FormularioJuego from './pages/FormularioJuego';
 import EstadisticasPersonales from './pages/EstadisticasPersonales';
 import FormularioReseña from './pages/FormularioReseña';
 import ListaReseñas from './pages/ListaReseñas';
+
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -35,6 +35,7 @@ function App() {
             <Route path="/juego/:id/editar" element={<FormularioJuego darkMode={darkMode} />} />
             <Route path="/juego/:juegoId/reseña" element={<FormularioReseña darkMode={darkMode} />} />
             <Route path="/reseña/:reseñaId/editar" element={<FormularioReseña darkMode={darkMode} />} />
+
             <Route path="/reseñas" element={<ListaReseñas darkMode={darkMode} />} />
             <Route path="/estadisticas" element={<EstadisticasPersonales darkMode={darkMode} />} />
           </Routes>
@@ -67,10 +68,17 @@ function Header({ darkMode, toggleDarkMode }) {
 
 function Footer() {
   return (
-    <footer>
+    <footer className="footer-mejorado">
       <div className="container">
-        <p>GameTracker © 2025 - Desarrollado por Jóvenes Creativos</p>
-        <p>Juan Manuel Sandoval Pito</p>
+        <div className="footer-content">
+          <div className="footer-brand">
+            <h3 className="footer-title">GameTracker</h3>
+            <p className="footer-description">Tu biblioteca de juegos, organiza y editar los videojuegos que hayas probado</p>
+          </div>
+          <p className="footer-credit">
+            © {new Date().getFullYear()} • Desarrollado por Juan Manuel Sandoval Pito
+          </p>
+        </div>
       </div>
     </footer>
   );

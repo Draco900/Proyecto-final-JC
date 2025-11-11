@@ -1,6 +1,6 @@
 // Lista y gestión de reseñas, con edición y eliminación.
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { getReseñas, deleteReseña } from '../services/api';
 import StarRating from '../components/StarRating';
 
@@ -8,6 +8,10 @@ export default function ListaReseñas() {
   const [reseñas, setReseñas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const filtroJuegoId = params.get('juegoId');
 
   useEffect(() => {
     const cargar = async () => {
@@ -36,14 +40,21 @@ export default function ListaReseñas() {
   if (loading) return <p>Cargando reseñas...</p>;
   if (error) return <p className="error">{error}</p>;
 
+  const reseñasFiltradas = filtroJuegoId
+    ? reseñas.filter(r => {
+        const id = typeof r.juegoId === 'object' ? r.juegoId?._id : r.juegoId;
+        return id === filtroJuegoId;
+      })
+    : reseñas;
+
   return (
     <>
       <h1>Reseñas</h1>
-      {reseñas.length === 0 ? (
+      {reseñasFiltradas.length === 0 ? (
         <p>No hay reseñas registradas.</p>
       ) : (
         <div className="grid">
-          {reseñas.map((r) => (
+          {reseñasFiltradas.map((r) => (
             <div className="card" key={r._id}>
               <div className="card-body">
                 <h3>{r.juegoId?.titulo || 'Juego'}</h3>
@@ -51,7 +62,6 @@ export default function ListaReseñas() {
                 <p>{r.textoReseña}</p>
                 <small>Horas: {r.horasJugadas || 0} • Dificultad: {r.dificultad}</small>
                 <div className="card-actions">
-                  <Link to={`/reseña/${r._id}/editar`} className="btn btn-secondary">Editar</Link>
                   <button className="btn btn-danger" onClick={() => eliminar(r._id)}>Eliminar</button>
                 </div>
               </div>

@@ -1,6 +1,6 @@
-// Rutas de Estadísticas - Aquí calculo todos los datos chulos de mi colección
+// Rutas de Estadísticas - Aquí calculo todos los datos de mi colección
 // Esto es lo que uso para mostrar gráficas y estadísticas en el frontend
-// Me costó un poco entender las agregaciones de MongoDB, pero quedaron bien
+// Me costó un poco pero quedaron bien
 
 const express = require('express');
 const router = express.Router();

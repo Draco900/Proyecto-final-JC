@@ -1,58 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import StarRating from '../components/StarRating';
-import { getJuegoById, createReseña, updateReseña, getReseñaById, getJuegos } from '../services/api';
+import { getJuegoById, createReseña, updateReseña, getReseñaById } from '../services/api';
 
-export default function FormularioReseña({ darkMode }) {
+const FormularioReseña = ({ darkMode }) => {
   const { juegoId, reseñaId } = useParams();
   const navigate = useNavigate();
-
+  const [juego, setJuego] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [formData, setFormData] = useState({
     juegoId: juegoId || '',
     puntuacion: 5,
     textoReseña: '',
     horasJugadas: '',
     dificultad: 'Normal',
-    recomendaria: true
+    recomendaria: false
   });
 
-  const [juego, setJuego] = useState(null);
-  const [juegos, setJuegos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  // Cargar datos del juego si se proporciona juegoId
+  // Cargar datos del juego si es nueva reseña
   useEffect(() => {
-    if (juegoId) {
+    if (juegoId && !reseñaId) {
       const cargarJuego = async () => {
         try {
           const data = await getJuegoById(juegoId);
           setJuego(data);
-          // Asegurarse de que juegoId sea el _id del juego
-          setFormData(prev => ({ ...prev, juegoId: data._id }));
         } catch (err) {
-          setError('Error al cargar el juego: ' + err.message);
-          console.error(err);
+          setError('Error al cargar el juego');
         } finally {
           setLoading(false);
         }
       };
       cargarJuego();
-    } else {
-      // Si no hay juegoId en la ruta, cargar lista de juegos para seleccionar
-      const cargarLista = async () => {
-        try {
-          const lista = await getJuegos();
-          setJuegos(lista);
-        } catch (err) {
-          setError('Error al cargar juegos: ' + err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-      cargarLista();
     }
-  }, [juegoId]);
+  }, [juegoId, reseñaId]);
 
   // Cargar datos de reseña si se edita
   useEffect(() => {
@@ -60,21 +42,31 @@ export default function FormularioReseña({ darkMode }) {
       const cargarReseña = async () => {
         try {
           const r = await getReseñaById(reseñaId);
-          setFormData(prev => ({
-            ...prev,
-            juegoId: r.juegoId?._id || r.juegoId || prev.juegoId,
-            puntuacion: r.puntuacion || prev.puntuacion,
+          
+          if (!r) {
+            throw new Error('No se encontró la reseña');
+          }
+          
+          // Asegurarme de que el juegoId es correcto
+          const juegoIdActual = r.juegoId?._id || r.juegoId;
+          
+          if (!juegoIdActual) {
+            throw new Error('La reseña no tiene un juego asociado');
+          }
+          
+          setFormData({
+            juegoId: juegoIdActual,
+            puntuacion: r.puntuacion || 5,
             textoReseña: r.textoReseña || '',
-            horasJugadas: r.horasJugadas ?? '',
+            horasJugadas: r.horasJugadas || '',
             dificultad: r.dificultad || 'Normal',
             recomendaria: !!r.recomendaria
-          }));
-          if (r.juegoId && typeof r.juegoId === 'object') {
-            setJuego(r.juegoId);
-          } else if (r.juegoId) {
-            const data = await getJuegoById(r.juegoId);
-            setJuego(data);
-          }
+          });
+          
+          // Cargar los datos del juego relacionado
+          const data = await getJuegoById(juegoIdActual);
+          setJuego(data);
+          
         } catch (err) {
           setError('Error al cargar la reseña: ' + err.message);
         } finally {
@@ -82,147 +74,102 @@ export default function FormularioReseña({ darkMode }) {
         }
       };
       cargarReseña();
+    } else {
+      setLoading(false);
     }
   }, [reseñaId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validación
-    if (!formData.juegoId) {
-      setError('Se requiere seleccionar un juego');
-      return;
-    }
-    if (!formData.puntuacion || formData.puntuacion < 1 || formData.puntuacion > 5) {
-      setError('La puntuación debe estar entre 1 y 5 estrellas');
-      return;
-    }
-
-    const reseñaData = {
-      juegoId: formData.juegoId, // Este debe ser el _id del juego
-      puntuacion: parseInt(formData.puntuacion),
-      textoReseña: formData.textoReseña,
-      horasJugadas: formData.horasJugadas ? parseInt(formData.horasJugadas) : 0,
-      dificultad: formData.dificultad,
-      recomendaria: formData.recomendaria
-    };
-
     try {
       if (reseñaId) {
-        await updateReseña(reseñaId, reseñaData);
-        alert('¡Reseña actualizada exitosamente!');
+        await updateReseña(reseñaId, formData);
       } else {
-        await createReseña(reseñaData);
-        alert('¡Reseña guardada exitosamente!');
+        await createReseña(formData);
       }
-      navigate('/reseñas');
+      navigate('/resenas');
     } catch (err) {
-      setError('Error al guardar la reseña: ' + err.message);
-      console.error('Error detallado:', err);
+      setError('Error al guardar la reseña');
     }
   };
 
-  const renderStars = (rating) => (
-    <StarRating value={rating} onChange={(val) => setFormData({ ...formData, puntuacion: val })} />
-  );
+  if (loading) {
+    return <div className="container"><h2>Cargando...</h2></div>;
+  }
 
-  if (loading) return <div className="container"><p>Cargando...</p></div>;
-  if (error) return <div className="container"><p className="error">{error}</p></div>;
+  if (error) {
+    return (
+      <div className="container">
+        <h2>Error</h2>
+        <p>{error}</p>
+        <button onClick={() => navigate('/resenas')} className="btn btn-primary">
+          Volver a reseñas
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <h1>{reseñaId ? 'Editar Reseña' : (juegoId ? `Reseña para: ${juego?.titulo}` : 'Nueva Reseña')}</h1>
+    <div className={`container ${darkMode ? 'dark-mode' : ''}`}>
+      <h2>{reseñaId ? 'Editar Reseña' : 'Nueva Reseña'}</h2>
+      {juego && <h3>{juego.titulo}</h3>}
       
-      {error && (
-        <div className="alert alert-error" style={{ marginBottom: '20px' }}>
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="form-juego">
-        {!juegoId && (
-          <div className="form-group">
-            <label htmlFor="juegoId">Juego *</label>
-            <select
-              id="juegoId"
-              name="juegoId"
-              value={formData.juegoId}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Selecciona un juego</option>
-              {juegos.map((j) => (
-                <option key={j._id} value={j._id}>{j.titulo}</option>
-              ))}
-            </select>
-          </div>
-        )}
+      <form onSubmit={handleSubmit} className="form-container">
         <div className="form-group">
-          <label>Puntuación *</label>
-          <div className="star-rating" style={{ fontSize: '2rem', marginBottom: '10px' }}>
-            {renderStars(formData.puntuacion)}
-          </div>
-          <input
-            type="range"
-            min="1"
-            max="5"
-            value={formData.puntuacion}
-            onChange={(e) => setFormData({ ...formData, puntuacion: parseInt(e.target.value) })}
-            style={{ width: '100%' }}
+          <label>Puntuación:</label>
+          <StarRating 
+            value={formData.puntuacion} 
+            onChange={(value) => setFormData({...formData, puntuacion: value})}
           />
-          <div style={{ textAlign: 'center', marginTop: '5px' }}>
-            {formData.puntuacion} estrella{formData.puntuacion !== 1 ? 's' : ''}
-          </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="textoReseña">Tu Reseña</label>
+          <label>Texto de la reseña:</label>
           <textarea
-            id="textoReseña"
             name="textoReseña"
             value={formData.textoReseña}
             onChange={handleChange}
-            rows="6"
-            placeholder="Escribe tu opinión sobre el juego..."
+            rows="4"
+            required
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="horasJugadas">Horas Jugadas</label>
+          <label>Horas jugadas:</label>
           <input
             type="number"
-            id="horasJugadas"
             name="horasJugadas"
             value={formData.horasJugadas}
             onChange={handleChange}
             min="0"
-            placeholder="Ej: 25"
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="dificultad">Dificultad</label>
+          <label>Dificultad:</label>
           <select
-            id="dificultad"
             name="dificultad"
             value={formData.dificultad}
             onChange={handleChange}
           >
+            <option value="Muy fácil">Muy fácil</option>
             <option value="Fácil">Fácil</option>
             <option value="Normal">Normal</option>
             <option value="Difícil">Difícil</option>
+            <option value="Muy difícil">Muy difícil</option>
           </select>
         </div>
 
-        <div className="form-group form-checkbox">
+        <div className="form-group">
           <label>
             <input
               type="checkbox"
@@ -230,26 +177,25 @@ export default function FormularioReseña({ darkMode }) {
               checked={formData.recomendaria}
               onChange={handleChange}
             />
-            ¿Recomendarías este juego?
+            Recomendaría este juego
           </label>
         </div>
 
         <div className="form-actions">
+          <button type="submit" className="btn btn-primary">
+            {reseñaId ? 'Actualizar' : 'Guardar'}
+          </button>
           <button 
             type="button" 
-            className="btn btn-secondary" 
-            onClick={() => navigate(-1)}
+            className="btn btn-secondary"
+            onClick={() => navigate('/resenas')}
           >
             Cancelar
           </button>
-          <button 
-            type="submit" 
-            className="btn btn-primary"
-          >
-            {reseñaId ? 'Actualizar Reseña' : 'Guardar Reseña'}
-          </button>
         </div>
       </form>
-    </>
+    </div>
   );
-}
+};
+
+export default FormularioReseña;
