@@ -13,6 +13,7 @@ export default function ListaReseñas() {
   const params = new URLSearchParams(location.search);
   const filtroJuegoId = params.get('juegoId');
 
+  // Cargar reseñas desde el backend
   useEffect(() => {
     const cargar = async () => {
       try {
@@ -27,6 +28,7 @@ export default function ListaReseñas() {
     cargar();
   }, []);
 
+  // Eliminar reseña
   const eliminar = async (id) => {
     if (!window.confirm('¿Eliminar reseña?')) return;
     try {

@@ -7,6 +7,7 @@ export default function EstadisticasPersonales({ darkMode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Cargar estadísticas desde el backend
   useEffect(() => {
     const cargar = async () => {
       try {
@@ -23,6 +24,7 @@ export default function EstadisticasPersonales({ darkMode }) {
 
   return (
     <>
+      {/* Título de la página */}
       <h1>Estadísticas Personales</h1>
       {loading && <p>Cargando estadísticas...</p>}
       {error && <p className="error">{error}</p>}
@@ -48,6 +50,7 @@ export default function EstadisticasPersonales({ darkMode }) {
       )}
       {stats?.distribGenero?.length > 0 && (
         <div style={{ marginTop: 16 }}>
+          {/* Lista de distribución por género */}
           <h2>Distribución por género</h2>
           <ul>
             {stats.distribGenero.map(g => (

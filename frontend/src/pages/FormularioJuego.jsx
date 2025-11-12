@@ -5,6 +5,7 @@ import { createJuego, updateJuego, getJuegoById } from '../services/api';
 export default function FormularioJuego({ darkMode }) {
   const navigate = useNavigate();
   const { id } = useParams();
+  // Si hay "id" estamos editando, si no, creando
 
   const [formData, setFormData] = useState({
     titulo: '',
@@ -20,6 +21,7 @@ export default function FormularioJuego({ darkMode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Manejo de cambios del formulario
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -28,11 +30,12 @@ export default function FormularioJuego({ darkMode }) {
     });
   };
 
+  // Enviar el formulario: crear o actualizar juego
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     
-    // Validación básica (mantenemos tus validaciones)
+    // Validación básica
     if (!formData.titulo || !formData.genero || !formData.plataforma) {
       setError('Por favor, completa los campos obligatorios: título, género y plataforma.');
       return;
@@ -89,15 +92,19 @@ export default function FormularioJuego({ darkMode }) {
 
   return (
     <>
+      {/* Título dinámico según acción */}
       <h1>{id ? 'Editar Juego' : 'Añadir Nuevo Juego'}</h1>
       
+      {/* Mensaje de error */}
       {error && (
         <div className="alert alert-error" style={{ marginBottom: '20px' }}>
           {error}
         </div>
       )}
       
+      {/* Formulario principal */}
       <form onSubmit={handleSubmit} className="form-juego">
+        {/* Campo: título del juego */}
         <div className="form-group">
           <label htmlFor="titulo">Título *</label>
           <input
@@ -110,6 +117,7 @@ export default function FormularioJuego({ darkMode }) {
           />
         </div>
 
+        {/* Campo: género */}
         <div className="form-group">
           <label htmlFor="genero">Género *</label>
           <select
@@ -130,6 +138,7 @@ export default function FormularioJuego({ darkMode }) {
           </select>
         </div>
 
+        {/* Campo: plataforma */}
         <div className="form-group">
           <label htmlFor="plataforma">Plataforma *</label>
           <select
@@ -148,6 +157,7 @@ export default function FormularioJuego({ darkMode }) {
           </select>
         </div>
 
+        {/* Campo: año de lanzamiento */}
         <div className="form-group">
           <label htmlFor="añoLanzamiento">Año de Lanzamiento</label>
           <input
@@ -161,6 +171,7 @@ export default function FormularioJuego({ darkMode }) {
           />
         </div>
 
+        {/* Campo: desarrollador */}
         <div className="form-group">
           <label htmlFor="desarrollador">Desarrollador</label>
           <input
@@ -172,6 +183,7 @@ export default function FormularioJuego({ darkMode }) {
           />
         </div>
 
+        {/* Campo: URL de portada */}
         <div className="form-group">
           <label htmlFor="imagenPortada">URL de la Portada</label>
           <input
@@ -184,6 +196,7 @@ export default function FormularioJuego({ darkMode }) {
           />
         </div>
 
+        {/* Campo: descripción */}
         <div className="form-group">
           <label htmlFor="descripcion">Descripción</label>
           <textarea
@@ -195,6 +208,7 @@ export default function FormularioJuego({ darkMode }) {
           />
         </div>
 
+        {/* Campo: estado completado */}
         <div className="form-group form-checkbox">
           <label>
             <input
@@ -207,6 +221,7 @@ export default function FormularioJuego({ darkMode }) {
           </label>
         </div>
 
+        {/* Acciones del formulario */}
         <div className="form-actions">
           <button 
             type="button" 

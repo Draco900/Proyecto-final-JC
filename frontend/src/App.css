@@ -557,3 +557,28 @@ h1, h2 {
     width: 100%;
   }
 }
+
+.scroll-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--primary);
+  color: #fff;
+  font-size: 20px;
+  line-height: 44px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  z-index: 200;
+  transition: var(--transition);
+}
+
+.scroll-top:hover {
+  background-color: #2563eb;
+}
+
+/* Botón flotante para subir al inicio de la página */

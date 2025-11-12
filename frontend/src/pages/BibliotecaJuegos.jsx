@@ -1,3 +1,4 @@
+// Página principal: listado y filtros de juegos
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import TarjetaJuego from '../components/TarjetaJuego';

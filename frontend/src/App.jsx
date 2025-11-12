@@ -8,9 +8,13 @@ import FormularioReseña from './pages/FormularioReseña';
 import ListaReseñas from './pages/ListaReseñas';
 
 
+// Componente raíz: define enrutado y layout global
 function App() {
+  // Estado: modo oscuro
   const [darkMode, setDarkMode] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
+  // Efecto: aplicar clase de "Modo oscuro" al <body>
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add('dark-mode');
@@ -19,15 +23,35 @@ function App() {
     }
   }, [darkMode]);
 
+  // Efecto: mostrar botón de "Subir arriba" cuando se llega al final
+  useEffect(() => {
+    const onScroll = () => {
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
+      setShowScrollTop(atBottom);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Acción: alternar el modo oscuro
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
 
+  // Acción: hacer scroll suave al inicio
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
+    // Enrutador principal
     <Router>
       <div className="App">
+        {/* Encabezado con navegación y modo oscuro */}
         <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         
+        {/* Contenido principal y rutas */}
         <main className="container">
           <Routes>
             <Route path="/" element={<BibliotecaJuegos darkMode={darkMode} />} />
@@ -41,12 +65,18 @@ function App() {
           </Routes>
         </main>
 
+        {/* Pie de página */}
         <Footer />
+        {/* Botón flotante: subir arriba */}
+        {showScrollTop && (
+          <button className="scroll-top" onClick={scrollToTop}>↑</button>
+        )}
       </div>
     </Router>
   );
 }
 
+// Encabezado: marca, navegación y botón de modo oscuro
 function Header({ darkMode, toggleDarkMode }) {
   return (
     <header>
@@ -66,6 +96,7 @@ function Header({ darkMode, toggleDarkMode }) {
   );
 }
 
+// Pie de página con marca y créditos
 function Footer() {
   return (
     <footer className="footer-mejorado">

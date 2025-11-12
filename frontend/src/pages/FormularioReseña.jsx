@@ -6,6 +6,7 @@ import { getJuegoById, createReseña, updateReseña, getReseñaById } from '../s
 const FormularioReseña = ({ darkMode }) => {
   const { juegoId, reseñaId } = useParams();
   const navigate = useNavigate();
+  // Si hay "reseñaId" estamos editando; si no, creando
   const [juego, setJuego] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -79,6 +80,7 @@ const FormularioReseña = ({ darkMode }) => {
     }
   }, [reseñaId]);
 
+  // Manejo de cambios del formulario
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -87,6 +89,7 @@ const FormularioReseña = ({ darkMode }) => {
     }));
   };
 
+  // Enviar el formulario de reseña
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -102,10 +105,12 @@ const FormularioReseña = ({ darkMode }) => {
     }
   };
 
+  // Estado de carga
   if (loading) {
     return <div className="container"><h2>Cargando...</h2></div>;
   }
 
+  // Estado de error
   if (error) {
     return (
       <div className="container">
@@ -120,9 +125,11 @@ const FormularioReseña = ({ darkMode }) => {
 
   return (
     <div className={`container ${darkMode ? 'dark-mode' : ''}`}>
+      {/* Títulos y juego asociado */}
       <h2>{reseñaId ? 'Editar Reseña' : 'Nueva Reseña'}</h2>
       {juego && <h3>{juego.titulo}</h3>}
       
+      {/* Formulario principal de reseña */}
       <form onSubmit={handleSubmit} className="form-container">
         <div className="form-group">
           <label>Puntuación:</label>
@@ -181,6 +188,7 @@ const FormularioReseña = ({ darkMode }) => {
           </label>
         </div>
 
+        {/* Acciones del formulario */}
         <div className="form-actions">
           <button type="submit" className="btn btn-primary">
             {reseñaId ? 'Actualizar' : 'Guardar'}
