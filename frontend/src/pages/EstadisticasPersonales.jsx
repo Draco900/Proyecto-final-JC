@@ -49,7 +49,7 @@ export default function EstadisticasPersonales({ darkMode }) {
         </div>
       )}
       {stats?.distribGenero?.length > 0 && (
-        <div style={{ marginTop: 16 }}>
+        <div style={{ marginTop: 16, marginBottom: 24 }}>
           {/* Lista de distribución por género */}
           <h2>Distribución por género</h2>
           <ul>
@@ -59,7 +59,7 @@ export default function EstadisticasPersonales({ darkMode }) {
           </ul>
         </div>
       )}
-      <Link to="/" className="btn btn-secondary" style={{ marginTop: 16 }}>Volver a la Biblioteca</Link>
+      <Link to="/" className="btn btn-secondary" style={{ marginTop: 32 }}>Volver a la Biblioteca</Link>
     </>
   );
 }
