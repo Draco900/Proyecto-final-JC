@@ -95,6 +95,7 @@ export default function BibliotecaJuegos({ darkMode }) {
             <option value="Aventura">Aventura</option>
             <option value="Acción">Acción</option>
             <option value="RPG">RPG</option>
+            <option value="Estrategia">Estrategia</option>
             <option value="Deportes">Deportes</option>
             <option value="Metroidvania">Metroidvania</option>
             <option value="Acción/Aventura">Acción/Aventura</option>
